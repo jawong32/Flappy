@@ -9,7 +9,7 @@ public class Bird {
     private int posY = 400;
     
     private void fly(boolean buttonState) {
-        int posY += 20 ? buttonState : 0;
+        this.posY += 20 ? buttonState : 0;
     }
     
     private void gravity() {
