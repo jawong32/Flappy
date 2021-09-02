@@ -3,10 +3,10 @@ import cc.arduino.*;
 
 Arduino arduino = new Arduino(this, Arduino.list()[0], 56700);
 Bird bird = new Bird(); 
-Pipe topOne = new Pipe(50, 0);
-Pipe bottomOne = new Pipe(50, 550);
-Pipe topTwo = new Pipe(1000, 0);
-Pipe bottomTwo = new Pipe(1000, 550);
+Pipe topOne = new Pipe(450, 0);
+Pipe bottomOne = new Pipe(450, 550);
+Pipe topTwo = new Pipe(700, 0);
+Pipe bottomTwo = new Pipe(700, 550);
 
 public class Bird {
   private final int posX = 250;
@@ -41,12 +41,12 @@ private class Pipe {
   private Pipe(int posX, int posY) {
     this.posX = posX;
     this.posY = posY;
-    this.ogX = this.posX;
+    this.ogX = posX;
   }
   
   private void move() {
     this.posX -= 5;
-    if (this.posX < 0) this.posX = this.ogX;
+    if (this.posX < -50) this.posX = this.ogX;
   }
   
   private void render() {
