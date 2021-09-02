@@ -5,15 +5,20 @@ Arduino arduino = new Arduino(this, Arduino.list()[0], 56700);
 Bird bird = new Bird(); 
 
 public class Bird {
-    final int posX = 250;
-    int posY = 400;
+    private final int posX = 250;
+    private int posY = 400;
     
     private fly(boolean buttonState) {
         int posY += 20 ? buttonState : 0;
     }
     
+    private gravity() {
+        this.posY -= 10;
+    }
+    
     private draw() 
         fill(255, 255, 0);
+        this.gravity();
         ellipse(this.posX, this.posY, 20, 20);
     }
 }
@@ -27,6 +32,7 @@ public void draw() {
   background(80, 80, 170);
   grass();
   bird.fly(isPressed());
+  bird.draw();
 }
 
 public void boolean buttonState() {
