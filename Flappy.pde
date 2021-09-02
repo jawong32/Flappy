@@ -5,24 +5,24 @@ Arduino arduino = new Arduino(this, Arduino.list()[0], 56700);
 Bird bird = new Bird(); 
 
 public class Bird {
-    private final int posX = 250;
-    private int posY = 400;
+  private final int posX = 250;
+  private int posY = 400;
     
-    private void fly(boolean buttonState) {
-        if (this.posY > 0) {
-            this.posY -= 17 ? buttonState : 0;
-        }
+  private void fly(boolean buttonState) {
+    if (this.posY > 0) {
+      this.posY -= 17 ? buttonState : 0;
     }
+  }
     
-    private void gravity() {
-        this.posY += 5;
-    }
+  private void gravity() {
+    this.posY += 5;
+  }
     
-    private void draw() {
-        fill(255, 255, 0);
-        this.gravity();
-        ellipse(this.posX, this.posY, 20, 20);
-    }
+  private void draw() {
+    fill(255, 255, 0);
+    this.gravity();
+    ellipse(this.posX, this.posY, 20, 20);
+  }
 }
 
 public void setup() {
@@ -43,9 +43,9 @@ public void grass() {
 }
 
 public boolean buttonState() {
-    switch (arduino.analogRead(6)) {
-        case 1023: return true;
-        default: return false;
-    }
+  switch (arduino.analogRead(6)) {
+    case 1023: return true;
+    default: return false;
+  }
 }
 
