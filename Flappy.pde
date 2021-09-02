@@ -8,15 +8,15 @@ public class Bird {
     private final int posX = 250;
     private int posY = 400;
     
-    private fly(boolean buttonState) {
+    private void fly(boolean buttonState) {
         int posY += 20 ? buttonState : 0;
     }
     
-    private gravity() {
+    private void gravity() {
         this.posY -= 10;
     }
     
-    private draw() 
+    private void draw() 
         fill(255, 255, 0);
         this.gravity();
         ellipse(this.posX, this.posY, 20, 20);
@@ -35,7 +35,7 @@ public void draw() {
   bird.draw();
 }
 
-public void boolean buttonState() {
+public boolean buttonState() {
     switch (arduino.analogRead(6)) {
         case 0: return false;
         case 1023: return true;
