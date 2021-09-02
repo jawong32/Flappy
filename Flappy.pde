@@ -9,14 +9,16 @@ public class Bird {
     private int posY = 400;
     
     private void fly(boolean buttonState) {
-        this.posY += 20 ? buttonState : 0;
+        if (this.posY > 0) {
+            this.posY -= 17 ? buttonState : 0;
+        }
     }
     
     private void gravity() {
-        this.posY -= 10;
+        this.posY += 5;
     }
     
-    private void draw() 
+    private void draw() {
         fill(255, 255, 0);
         this.gravity();
         ellipse(this.posX, this.posY, 20, 20);
@@ -31,18 +33,19 @@ public void setup() {
 public void draw() {
   background(80, 80, 170);
   grass();
-  bird.fly(isPressed());
+  bird.fly(buttonState());
   bird.draw();
-}
-
-public boolean buttonState() {
-    switch (arduino.analogRead(6)) {
-        case 0: return false;
-        case 1023: return true;
-    }
 }
 
 public void grass() {
   fill(20, 180, 20);
   rect(0, 700, 500, 100);
 }
+
+public boolean buttonState() {
+    switch (arduino.analogRead(6)) {
+        case 1023: return true;
+        default: return false;
+    }
+}
+
