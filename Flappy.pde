@@ -10,7 +10,7 @@ public class Bird {
     
   private void fly(boolean buttonState) {
     if (this.posY > 0) {
-      this.posY -= 17 ? buttonState : 0;
+      this.posY -= buttonState ? 17 : 0;
     }
   }
     
