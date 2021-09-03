@@ -8,7 +8,21 @@ Pipe bottomOne = new Pipe(450, 550);
 Pipe topTwo = new Pipe(700, 0);
 Pipe bottomTwo = new Pipe(700, 550);
 
-public class Bird {
+class Shape {
+  private final int width;
+  private final int length;
+  private int posX;
+  private int posY;
+  
+  public Shape(int width, int length, int x, int y) {
+    this.width = width;
+    this.length = length;
+    this.posX = x;
+    this.posY = y;
+  }  
+}
+
+class Bird {
   private final int posX = 250;
   private int posY = 400;
     
@@ -31,7 +45,7 @@ public class Bird {
   }
 }
 
-private class Pipe {
+class Pipe {
   private final int width = 50;
   private final int length = 200;
   private int posX;
@@ -56,12 +70,12 @@ private class Pipe {
   }
 }
 
-public void setup() {
+void setup() {
   size(500, 800);
   noStroke();
 }
 
-public void draw() {
+void draw() {
   background(80, 80, 170);
   topOne.render();
   bottomOne.render();
@@ -72,12 +86,12 @@ public void draw() {
   bird.render();  
 }
 
-public void grass() {
+void grass() {
   fill(20, 180, 20);
   rect(0, 750, 500, 50);
 }
 
-public boolean buttonState() {
+boolean buttonState() {
   switch (arduino.analogRead(6)) {
     case 1023: return true;
     default: return false;
