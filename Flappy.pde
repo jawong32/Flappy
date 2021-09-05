@@ -10,6 +10,20 @@ Pipe bottomOne = new Pipe(450, 550);
 Pipe topTwo = new Pipe(700, 0);
 Pipe bottomTwo = new Pipe(700, 550);
 
+class Range {
+  final int start;
+  final int stop;
+  
+  Range(int start, int stop) {
+    this.start = start;
+    this.stop = stop;
+  }
+
+  boolean contains(int val) {
+    return val >= start && val <= stop;
+  }
+}
+
 class Shape {
   final int width;
   final int height;
@@ -44,6 +58,14 @@ class Bird extends Shape {
       this.posY += 5;
     }
   }
+
+  private void checkCollision() {} {
+    for (Object obstacle: obstacles) {
+      if (obstacle.rangeX.contans(this.posX) && obstacle.rangeY.contains(this.posY)) {
+        //TODO
+      }
+    }
+  }
     
   void render() {
     fill(255, 255, 0);
@@ -54,10 +76,14 @@ class Bird extends Shape {
 
 class Pipe extends Shape {
   private final int origX;
+  final Range rangeX;
+  final Range rangeY;
 
   Pipe(int posX, int posY) {
     super(50, 200, posX, posY);
     this.origX = posX;
+    this.rangeX = new Range(posX, posX + 50);
+    this.rangeY = new Range(posY, posY + 200);
     obstacles.add(this);
   }
 
