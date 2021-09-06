@@ -1,14 +1,12 @@
 import processing.serial.*;
 import cc.arduino.*;
+import java.util.Iterator;
 
 Arduino arduino = new Arduino(this, Arduino.list()[0], 56700);
 ArrayList<Obstacle> obstacles = new ArrayList<Obstacle>();
+int posXCounter = 800;
 
 Bird bird = new Bird(); 
-Obstacle topOne = new Obstacle(450, 0);
-Obstacle bottomOne = new Obstacle(450, 550);
-Obstacle topTwo = new Obstacle(700, 0);
-Obstacle bottomTwo = new Obstacle(700, 550);
 
 class Shape {
   final int width;
@@ -64,15 +62,17 @@ class Bird extends Shape {
     }
   }
 
-  private void checkCollision() {
+  private boolean isCollided() {
     for (Obstacle o: obstacles) {
-      if (o.range.contains(this.posX, this.posY)) {
-        noLoop();
+      if (o.range.contains(this.posX+10, this.posY+10) ||
+          o.range.contains(this.posX+10, this.posY-10)) {
+        return true;
       } 
     }
     if (this.posY + this.width > 750) {
-      noLoop();
+      return true;
     }
+    return false;
   }
     
   void render() {
@@ -83,27 +83,27 @@ class Bird extends Shape {
 }
 
 class Obstacle extends Shape {
-  private final int origX;
   Range range;
 
-  Obstacle(int posX, int posY) {
-    super(50, 200, posX, posY);
-    this.origX = posX;
-    this.range = new Range(posX, posX+50, posY, posY+200);
+  Obstacle(int height, int posX, int posY) {
+    super(50, height+100, posX, posY);
+    this.range = new Range(
+      posX, posX+50, 
+      posY, posY + this.height
+    );
     obstacles.add(this);
   }
 
   private void move() {
-    this.posX -= 5;
-    if (this.posX < -50) {
-      this.posX = this.origX;
-    }
+    this.posX -= 3;
     this.range = new Range(
-      this.posX, this.posX+50, this.posY, this.posY+200
+      this.posX, this.posX+50, 
+      this.posY, this.posY + this.height
     );
   }
   
   void render() {
+    fill(0, 100, 0);
     this.move();
     super.render();
   }
@@ -114,13 +114,14 @@ void setup() {
   noStroke();
 }
 
-void draw() {
+void draw() {  
   background(80, 80, 170);
   grass();
-  obstacles();
+  createObstacles();
+  moveObstacles();
   bird.fly(buttonState());
   bird.render();
-  bird.checkCollision();
+  if (bird.isCollided()) noLoop();
 }
 
 void grass() {
@@ -128,9 +129,23 @@ void grass() {
   rect(0, 750, 500, 50);
 }
 
-void obstacles() {
-  fill(0, 100, 0);
-  for (Obstacle o: obstacles) o.render();
+void createObstacles() {
+  int topHeight = (int) (Math.random() * 370);
+  int botHeight = 370 - topHeight;
+  obstacles.add(new Obstacle(topHeight, posXCounter, 0));
+  obstacles.add(new Obstacle(botHeight, posXCounter, 650 - botHeight));
+  posXCounter += 400;
+}
+
+void moveObstacles() {
+  Iterator<Obstacle> obsItr = obstacles.iterator();
+  while (obsItr.hasNext()) {
+    Obstacle o = obsItr.next();
+    o.render();
+    if (o.posX < - 50) {
+      obsItr.remove();
+    }
+  }
 }
 
 boolean buttonState() {
