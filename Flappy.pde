@@ -10,6 +10,24 @@ Obstacle bottomOne = new Obstacle(450, 550);
 Obstacle topTwo = new Obstacle(700, 0);
 Obstacle bottomTwo = new Obstacle(700, 550);
 
+class Shape {
+  final int width;
+  final int height;
+  int posX;
+  int posY;
+  
+  Shape(int width, int height, int posX, int posY) {
+    this.width = width;
+    this.height = height;
+    this.posX = posX;
+    this.posY = posY;
+  }  
+
+  void render() {
+    rect(this.posX, this.posY, this.width, this.height);
+  }
+}
+
 class Range {
   int startX;
   int stopX;
@@ -26,24 +44,6 @@ class Range {
   boolean contains(int valX, int valY) {
     return valX >= this.startX && valX <= this.stopX 
         && valY >= this.startY && valY <= this.stopY;
-  }
-}
-
-class Shape {
-  final int width;
-  final int height;
-  int posX;
-  int posY;
-  
-  Shape(int width, int height, int posX, int posY) {
-    this.width = width;
-    this.height = height;
-    this.posX = posX;
-    this.posY = posY;
-  }  
-
-  void render() {
-    rect(this.posX, this.posY, this.width, this.height);
   }
 }
 
@@ -69,6 +69,9 @@ class Bird extends Shape {
       if (o.range.contains(this.posX, this.posY)) {
         noLoop();
       } 
+    }
+    if (this.posY + this.width > 750) {
+      noLoop();
     }
   }
     
