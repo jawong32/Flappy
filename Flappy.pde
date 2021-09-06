@@ -2,25 +2,30 @@ import processing.serial.*;
 import cc.arduino.*;
 
 Arduino arduino = new Arduino(this, Arduino.list()[0], 56700);
-ArrayList<Object> obstacles = new ArrayList<Object()>;
+ArrayList<Obstacle> obstacles = new ArrayList<Obstacle>();
 
 Bird bird = new Bird(); 
-Pipe topOne = new Pipe(450, 0);
-Pipe bottomOne = new Pipe(450, 550);
-Pipe topTwo = new Pipe(700, 0);
-Pipe bottomTwo = new Pipe(700, 550);
+Obstacle topOne = new Obstacle(450, 0);
+Obstacle bottomOne = new Obstacle(450, 550);
+Obstacle topTwo = new Obstacle(700, 0);
+Obstacle bottomTwo = new Obstacle(700, 550);
 
 class Range {
-  final int start;
-  final int stop;
+  int startX;
+  int stopX;
+  int startY;
+  int stopY;
   
-  Range(int start, int stop) {
-    this.start = start;
-    this.stop = stop;
+  Range(int startX, int stopX, int startY, int stopY) {
+    this.startX = startX;
+    this.stopX = stopX;
+    this.startY = startY;
+    this.stopY = stopY;
   }
 
-  boolean contains(int val) {
-    return val >= start && val <= stop;
+  boolean contains(int valX, int valY) {
+    return valX >= this.startX && valX <= this.stopX 
+        && valY >= this.startY && valY <= this.stopY;
   }
 }
 
@@ -59,11 +64,11 @@ class Bird extends Shape {
     }
   }
 
-  private void checkCollision() {} {
-    for (Object obstacle: obstacles) {
-      if (obstacle.rangeX.contans(this.posX) && obstacle.rangeY.contains(this.posY)) {
-        //TODO
-      }
+  private void checkCollision() {
+    for (Obstacle o: obstacles) {
+      if (o.range.contains(this.posX, this.posY)) {
+        noLoop();
+      } 
     }
   }
     
@@ -74,16 +79,14 @@ class Bird extends Shape {
   }
 }
 
-class Pipe extends Shape {
+class Obstacle extends Shape {
   private final int origX;
-  final Range rangeX;
-  final Range rangeY;
+  Range range;
 
-  Pipe(int posX, int posY) {
+  Obstacle(int posX, int posY) {
     super(50, 200, posX, posY);
     this.origX = posX;
-    this.rangeX = new Range(posX, posX + 50);
-    this.rangeY = new Range(posY, posY + 200);
+    this.range = new Range(posX, posX+50, posY, posY+200);
     obstacles.add(this);
   }
 
@@ -92,10 +95,12 @@ class Pipe extends Shape {
     if (this.posX < -50) {
       this.posX = this.origX;
     }
+    this.range = new Range(
+      this.posX, this.posX+50, this.posY, this.posY+200
+    );
   }
   
   void render() {
-    fill(0, 100, 0);
     this.move();
     super.render();
   }
@@ -109,9 +114,10 @@ void setup() {
 void draw() {
   background(80, 80, 170);
   grass();
-  pipes();
+  obstacles();
   bird.fly(buttonState());
-  bird.render();  
+  bird.render();
+  bird.checkCollision();
 }
 
 void grass() {
@@ -119,11 +125,9 @@ void grass() {
   rect(0, 750, 500, 50);
 }
 
-void pipes() {
-  topOne.render();
-  topTwo.render();
-  bottomOne.render();
-  bottomTwo.render();
+void obstacles() {
+  fill(0, 100, 0);
+  for (Obstacle o: obstacles) o.render();
 }
 
 boolean buttonState() {
