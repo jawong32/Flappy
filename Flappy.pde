@@ -133,7 +133,6 @@ void draw() {
   bird.render(buttonIsPressed());
   if (bird.isCollided()) noLoop();
   updateScore();
-  System.out.println(obstacles.size());
 }
 
 void grass() {
