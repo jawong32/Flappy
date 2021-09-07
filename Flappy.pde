@@ -1,14 +1,11 @@
-//import processing.serial.*;
-//import cc.arduino.*;
-import java.util.Iterator;
+import processing.serial.*;
+import cc.arduino.*;
 
-//Arduino arduino = new Arduino(this, Arduino.list()[0], 56700);
+Arduino arduino = new Arduino(this, Arduino.list()[0], 56700);
 ArrayList<Obstacle> obstacles = new ArrayList<Obstacle>();
-Obstacle nextObs;
+Bird bird = new Bird(); 
 int posXCounter = 800;
 int score = 0;
-
-Bird bird = new Bird(); 
 
 class Shape {
   final int width;
@@ -133,8 +130,7 @@ void draw() {
   grass();
   createObstacles();
   moveObstacles();
-  bird.render(mousePressed);
-  //bird.render(buttonIsPressed());
+  bird.render(buttonIsPressed());
   if (bird.isCollided()) noLoop();
   updateScore();
   System.out.println(obstacles.size());
@@ -154,14 +150,7 @@ void createObstacles() {
 }
 
 void moveObstacles() {
-  ArrayList<Obstacle> obsCopy = (ArrayList) obstacles.clone();
-  for (Obstacle o: obsCopy) {
-    o.render();
-    if(o.posX < -50) {
-      //obstacles.remove(obsCopy.indexOf(o));
-      //obstacles.trimToSize();
-    }
-  }
+  for (Obstacle o: obstacles) o.render();
 }
 
 void updateScore() {
@@ -169,9 +158,9 @@ void updateScore() {
   text(score/2, 250, 100);
 }
 
-/*boolean buttonIsPressed() {
+boolean buttonIsPressed() {
   switch (arduino.analogRead(6)) {
     case 1023: return true;
     default: return false;
   }
-}*/
+}
