@@ -1,10 +1,12 @@
-import processing.serial.*;
-import cc.arduino.*;
+//import processing.serial.*;
+//import cc.arduino.*;
 import java.util.Iterator;
 
-Arduino arduino = new Arduino(this, Arduino.list()[0], 56700);
+//Arduino arduino = new Arduino(this, Arduino.list()[0], 56700);
 ArrayList<Obstacle> obstacles = new ArrayList<Obstacle>();
+Obstacle nextObs;
 int posXCounter = 800;
+int score = 0;
 
 Bird bird = new Bird(); 
 
@@ -50,9 +52,9 @@ class Bird extends Shape {
     super(20, 20, 250, 400);
   }
     
-  private void fly(boolean buttonState) {
+  private void fly(boolean buttonIsPressed) {
     if (this.posY > 0) {
-      this.posY -= buttonState ? 17 : 0;
+      this.posY -= buttonIsPressed ? 17 : 0;
     }
   }
     
@@ -69,14 +71,15 @@ class Bird extends Shape {
         return true;
       } 
     }
-    if (this.posY + this.width > 750) {
+    if (this.posY > 750) {
       return true;
     }
     return false;
   }
     
-  void render() {
+  void render(boolean buttonIsPressed) {
     fill(255, 255, 0);
+    this.fly(buttonIsPressed);
     this.gravity();
     ellipse(this.posX, this.posY, 20, 20);
   }
@@ -84,6 +87,7 @@ class Bird extends Shape {
 
 class Obstacle extends Shape {
   Range range;
+  boolean isDodged = false;
 
   Obstacle(int height, int posX, int posY) {
     super(50, height+100, posX, posY);
@@ -102,15 +106,25 @@ class Obstacle extends Shape {
     );
   }
   
+  private void dodged() {
+    if(this.posX + 50 < bird.posX && !this.isDodged) {
+      score++;
+      isDodged = true;
+    }
+  }
+  
   void render() {
     fill(0, 100, 0);
     this.move();
+    this.dodged();
     super.render();
   }
 }
 
 void setup() {
   size(500, 800);
+  textSize(100);
+  textAlign(CENTER);
   noStroke();
 }
 
@@ -119,9 +133,11 @@ void draw() {
   grass();
   createObstacles();
   moveObstacles();
-  bird.fly(buttonState());
-  bird.render();
+  bird.render(mousePressed);
+  //bird.render(buttonIsPressed());
   if (bird.isCollided()) noLoop();
+  updateScore();
+  System.out.println(obstacles.size());
 }
 
 void grass() {
@@ -138,19 +154,24 @@ void createObstacles() {
 }
 
 void moveObstacles() {
-  Iterator<Obstacle> obsItr = obstacles.iterator();
-  while (obsItr.hasNext()) {
-    Obstacle o = obsItr.next();
+  ArrayList<Obstacle> obsCopy = (ArrayList) obstacles.clone();
+  for (Obstacle o: obsCopy) {
     o.render();
-    if (o.posX < - 50) {
-      obsItr.remove();
+    if(o.posX < -50) {
+      //obstacles.remove(obsCopy.indexOf(o));
+      //obstacles.trimToSize();
     }
   }
 }
 
-boolean buttonState() {
+void updateScore() {
+  fill(255); 
+  text(score/2, 250, 100);
+}
+
+/*boolean buttonIsPressed() {
   switch (arduino.analogRead(6)) {
     case 1023: return true;
     default: return false;
   }
-}
+}*/
